@@ -1,0 +1,30 @@
+version: "3"
+
+services:
+  # web:
+  #   container_name: web
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/web/Dockerfile
+  #   restart: always
+  #   ports:
+  #     - 3000:3000
+  #   networks:
+  #     - fullpower_network
+  
+  backend-express:
+    container_name: backend-express
+    build:
+      context: .
+      dockerfile: ./apps/backend/express/Dockerfile
+    restart: always
+    ports:
+      - 4000:4000
+    networks:
+      - fullpower_network
+
+# Define a network, which allows containers to communicate
+# with each other, by using their container name as a hostname
+networks:
+  fullpower_network:
+    external: true
