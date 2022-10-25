@@ -1,12 +1,14 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-
-import { PrimaryButton } from "./Button.stories";
+import {render, screen, fireEvent} from "@testing-library/react";
+import {debug} from "vitest-preview";
+import {PrimaryButton} from "./Button.stories";
 
 describe("#PrimaryButton", () => {
   it("renders a count button", () => {
     render(<PrimaryButton />);
+    debug();
+
     const button = screen.getByRole("button", {
-      name: /boop/i,
+      name: /boopss1/i,
     });
 
     expect(button).toBeInTheDocument();

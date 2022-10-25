@@ -13,6 +13,7 @@ coverage
 out/
 build
 dist
+.vitest-preview
 
 # misc
 .DS_Store

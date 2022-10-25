@@ -31,3 +31,7 @@
 ### Optional Testing : Wallaby.js
 
 _Wallaby.js: Select Configuration > Automatic Configuration \<closest project in mono-repo\>_
+
+### Experimental
+
+test [vitest-preview](https://github.com/nvh95/vitest-preview)
