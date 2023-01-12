@@ -10,8 +10,14 @@
     "PLAYWRIGHT_HEADLESS"
   ],
   "pipeline": {
+    "clean": {
+      "dependsOn": [
+        "^clean"
+      ]
+    },
     "build": {
       "dependsOn": [
+        "clean",
         "^build",
         "prisma:generate"
       ],
@@ -34,6 +40,11 @@
         "^prisma:generate"
       ],
       "cache": false
+    },
+    "start": {
+      "dependsOn": [
+        "^build"
+      ]
     },
     "prisma:generate": {
       "cache": false

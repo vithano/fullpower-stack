@@ -1,6 +1,5 @@
 FROM node:lts-bullseye-slim AS builder
 #https://turbo.build/repo/docs/handbook/deploying-with-docker
-#https://github.com/vercel/turbo/tree/main/examples/with-docker
 
 # Install pnpm
 ENV PNPM_HOME="/root/.local/share/pnpm"
@@ -13,14 +12,10 @@ RUN npm install --global pnpm \
 WORKDIR /app
 RUN pnpm install -g turbo
 COPY . .
-RUN turbo prune --scope=@fullpower-stack/vite --docker
+RUN turbo prune --scope=@fullpower-stack/remix --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM node:lts-bullseye-slim AS installer
-
-# we need this so vite can inject the correct backend api
-ENV NODE_ENV test
-
 WORKDIR /app
 
 # Install pnpm
@@ -44,34 +39,15 @@ COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
 
 RUN pnpm install
-RUN pnpm turbo run build --scope=@fullpower-stack/vite
+RUN pnpm turbo run build --filter=@fullpower-stack/remix
 
-# Run the app
-FROM node:lts-bullseye-slim AS runner
 ENV NODE_ENV production
 
-# Install pnpm
-ENV PNPM_HOME="/root/.local/share/pnpm"
-ENV PATH="${PATH}:${PNPM_HOME}"
-SHELL ["/bin/bash", "-c"]
-RUN npm install --global pnpm \
-    && SHELL=bash pnpm setup \
-    && source /root/.bashrc
+# RUN addgroup --system --gid 1001 nodejs
+# RUN adduser --system --uid 1001 remix
+# USER remix
 
+EXPOSE 3003
+ENV PORT 3003
 
-WORKDIR /app
-
-# maybe we dont need this if we use vite dev server
-RUN npm i -g http-server
-
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 vite
-USER vite
-
-# COPY --from=installer --chown=vite:nodejs /app ./
-# EXPOSE 5173
-# CMD pnpm dev:vite
-
-COPY --from=installer --chown=vite:nodejs /app/apps/vite/dist ./
-EXPOSE 5173
-CMD http-server -p 5173
+CMD pnpm turbo run start --filter=@fullpower-stack/remix

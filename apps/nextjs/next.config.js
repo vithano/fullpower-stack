@@ -1,4 +1,5 @@
-const path = require("path");
+/* eslint-disable */
+const { join } = require("path");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -10,11 +11,16 @@ const nextConfig = {
 
   // https://nextjs.org/docs/advanced-features/output-file-tracing#caveats
   // https://github.com/vercel/turbo/blob/main/examples/with-docker/apps/web/next.config.js
-  output: "standalone",
-  experimental: {
-    // this includes files from the monorepo base two directories up
-    outputFileTracingRoot: path.join(__dirname, "../../"),
-  },
 };
 
-module.exports = nextConfig;
+const standaloneConfig = process.env.STANDALONE_BUILD
+  ? {
+      output: "standalone",
+      experimental: {
+        // this includes files from the monorepo base two directories up
+        outputFileTracingRoot: join(__dirname, "../../"),
+      },
+    }
+  : {};
+
+module.exports = { ...nextConfig, ...standaloneConfig };
